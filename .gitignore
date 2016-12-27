@@ -1,0 +1,12 @@
+.idea/
+distribution/__init__.py
+distribution/setup.cfg
+distribution/setup.py
+distribution/build/
+distribution/scripts/
+distribution/vaultHelper/
+distribution/vaultHelper.egg-info/
+target/
+venv/
+*.pyc
+src/unittest/python/out
