@@ -168,7 +168,7 @@ Secret path, e.g. env/myTeam/myService/jdbc.password: nonlive/myTeam/myService/j
 ## Release Notes
 
 ### Version 1.00 released 2016-12-27
-* Inital release
+* Initial release
 
 ## License
 vaultHelper is published under the terms of the [Apache License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.html).
