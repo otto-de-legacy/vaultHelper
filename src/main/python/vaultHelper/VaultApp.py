@@ -21,9 +21,7 @@ def cli():
 @click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
 def login(ldapusername, ldappassword, config_path):
     """
-    :type ldapusername: string
-    :type ldappassword: string
-    :type config_path: string
+    login again vault with LDAP credentials
     """
     vault_service = VaultService()
     configuration = MyVaultConfiguration(config_path)
@@ -44,8 +42,7 @@ def login(ldapusername, ldappassword, config_path):
 @click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
 def read(path, config_path):
     """
-    :type path: string
-    :type config_path: string
+    reads the value for a given secret path
     """
     vault_service = VaultService()
     configuration = MyVaultConfiguration(config_path)
@@ -64,8 +61,7 @@ def read(path, config_path):
 @click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
 def list(path, config_path):
     """
-    :type path: string
-    :type config_path: string
+    list secrets underneath a path
     """
     vault_service = VaultService()
     configuration = MyVaultConfiguration(config_path)
@@ -90,9 +86,7 @@ def list(path, config_path):
 @click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
 def write(path, value, config_path):
     """
-    :type path: string
-    :type value: string
-    :type config_path: string
+    writes a secret value for the given path
     """
     vault_service = VaultService()
     configuration = MyVaultConfiguration(config_path)
@@ -110,8 +104,7 @@ def write(path, value, config_path):
 @click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
 def delete(path, config_path):
     """
-    :type path: string
-    :type config_path: string
+    removes a secret by path
     """
     vault_service = VaultService()
     configuration = MyVaultConfiguration(config_path)
@@ -133,10 +126,7 @@ def delete(path, config_path):
 @click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
 def read_policies(mesos_framework, mesos_group, microservice, config_path):
     """
-    :type mesos_framework: string
-    :type mesos_group: string
-    :type microservice: string
-    :type config_path: string
+    reads all service policies from the policy repository
     """
     configuration = MyVaultConfiguration(config_path)
     policy_service = PolicyService(configuration)
@@ -156,11 +146,7 @@ def read_policies(mesos_framework, mesos_group, microservice, config_path):
 @click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
 def add_policies(mesos_framework, mesos_group, microservice, path, config_path):
     """
-    :type mesos_framework: string
-    :type mesos_group: string
-    :type microservice: string
-    :type path: string
-    :type config_path: string
+    adds read policy(ies) for the given service and path to the policy repository
     """
     configuration = MyVaultConfiguration(config_path)
     policy_service = PolicyService(configuration)
