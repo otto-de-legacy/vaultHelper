@@ -28,6 +28,7 @@ SOME_NONLIVE_SECRET_PATH = "nonlive/myTeam/myService/mongo.password"
 SOME_NONLIVE_SECRET_PARENT_PATH = "nonlive/myTeam/myService"
 
 SOME_SECRET_VALUE = "guessIt"
+SOME_SECRET_FILE = "/resources/sample.json"
 
 VAULT_MOCK_CONFIG = {
     "credentials": {
@@ -45,8 +46,8 @@ VAULT_MOCK_CONFIG = {
 
 class TestVaultApp(TestCase):
     def setUp(self):
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.config_path = current_dir + "/.myVault/myVault.cfg"
+        self.current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.config_path = self.current_dir + "/.myVault/myVault.cfg"
         self.vault_mock = VaultTestHelper(VAULT_MOCK_CONFIG)
 
     def tearDown(self):
@@ -144,6 +145,23 @@ class TestVaultApp(TestCase):
 
         self.vault_mock.verify_client_login("https://development", SOME_TOKEN_FOR_NONLIVE)
         self.vault_mock.verify_vault_write(SOME_CI_SECRET_PATH, SOME_SECRET_VALUE)
+
+    def test_writeFile(self):
+        # given
+        fileUrl = "file:///" + self.current_dir + SOME_SECRET_FILE
+        fileContent = '{"key": "value"}'
+        self.vault_mock.set_write(SOME_CI_SECRET_PATH, fileContent)
+
+        # when
+        runner = CliRunner()
+        result = runner.invoke(cli, ["write", "--path", SOME_CI_SECRET_PATH, "--value", fileUrl,
+                                     "--config_path", self.config_path])
+
+        # then
+        self.assertIs(0, result.exit_code, result.exception)
+
+        self.vault_mock.verify_client_login("https://development", SOME_TOKEN_FOR_NONLIVE)
+        self.vault_mock.verify_vault_write(SOME_CI_SECRET_PATH, fileContent)
 
     def test_write_with_nonlive_label(self):
         # given

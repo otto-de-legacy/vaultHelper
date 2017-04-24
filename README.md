@@ -170,6 +170,9 @@ Secret path, e.g. env/myTeam/myService/jdbc.password: nonlive/myTeam/myService/j
 ### Version 1.00 released 2016-12-27
 * Initial release
 
+### Version 1.1 released 2017-04-24
+* myvault.py can write the content of a file as vault secret
+
 ## License
 vaultHelper is published under the terms of the [Apache License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.html).
 

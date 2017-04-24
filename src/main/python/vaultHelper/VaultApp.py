@@ -82,7 +82,7 @@ def list(path, config_path):
 
 @cli.command()
 @click.option('--path', prompt=True, help="Secret path, e.g. env/myTeam/myService/jdbc.password")
-@click.option('--value', prompt=True, help="Secret value")
+@click.option('--value', prompt=True, help="Secret value or file (file://")
 @click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
 def write(path, value, config_path):
     """
@@ -94,9 +94,12 @@ def write(path, value, config_path):
     _login_with_token(configuration, label, vault_service)
 
     paths = _expand_paths(configuration, label, path)
+
+    secretValue = _get_secret_value(value)
+
     for currentPath in paths:
         click.secho("writing %s" % currentPath, fg="green")
-        vault_service.write(currentPath, value)
+        vault_service.write(currentPath, secretValue)
 
 
 @cli.command()
@@ -162,6 +165,17 @@ def add_policies(mesos_framework, mesos_group, microservice, path, config_path):
 
     for policy in policy_service.get_policies():
         click.secho("\t%s" % policy.path, fg="green")
+
+
+def _get_secret_value(value):
+    m = re.match("file://(.*)", value)
+    if (m):
+        with open(m.group(1), 'r') as myfile:
+            secretValue = myfile.read()
+            myfile.close()
+    else:
+        secretValue = value
+    return secretValue
 
 
 def _get_token_credentials(label):
