@@ -3,7 +3,7 @@ configparser==3.5.0b2
 ddt==1.1.1
 enum34==1.1.6
 flake8==3.2.1
-mockito==0.7.0
+mockito==1.0.12
 nose==1.3.7
 pycodestyle==2.2.0
 pyflakes==1.3.0

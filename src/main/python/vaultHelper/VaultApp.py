@@ -131,9 +131,7 @@ def read_policies(mesos_framework, mesos_group, microservice, config_path):
     """
     reads all service policies from the policy repository
     """
-    configuration = MyVaultConfiguration(config_path)
-    policy_service = PolicyService(configuration)
-    (team, service) = _extract_team_and_service(microservice)
+    configuration, policy_service, service, team = _init_policy_service(config_path, microservice)
     policies = policy_service.load_policies(mesos_framework, mesos_group, team, service)
     for policy in policies:
         click.secho("\t%s" % policy.path, fg="green")
@@ -151,15 +149,39 @@ def add_policies(mesos_framework, mesos_group, microservice, path, config_path):
     """
     adds read policy(ies) for the given service and path to the policy repository
     """
-    configuration = MyVaultConfiguration(config_path)
-    policy_service = PolicyService(configuration)
-    (team, service) = _extract_team_and_service(microservice)
+    configuration, policy_service, service, team = _init_policy_service(config_path, microservice)
     policy_service.load_policies(mesos_framework, mesos_group, team, service)
 
     label = configuration.get_label_for_path(path)
     paths = _expand_paths(configuration, label, path)
     for currentPath in paths:
         policy_service.add_read_policy(currentPath)
+
+    policy_service.persist()
+
+    for policy in policy_service.get_policies():
+        click.secho("\t%s" % policy.path, fg="green")
+
+
+@cli.command()
+@click.option('--mesos_framework', default=MyVaultConfiguration.DEFAULT_MESOS_FRAMEWORK,
+              help="mesos framework, e.g., marathon|chronos")
+@click.option('--mesos_group', prompt=True, help="organizational mesos group")
+@click.option('--microservice', prompt="Microservice, e.g., myTeam-myService", help="myTeam-myService")
+@click.option('--path', prompt="Secret path, e.g. env/myTeam/myService/jdbc.password",
+              help="Secret path, e.g. env/myTeam/myService/jdbc.password")
+@click.option('--config_path', default=MyVaultConfiguration.DEFAULT_CONFIGURATION_PATH, help="Optional")
+def remove_policies(mesos_framework, mesos_group, microservice, path, config_path):
+    """
+    removes read policy(ies) for the given service and path from the policy repository
+    """
+    configuration, policy_service, service, team = _init_policy_service(config_path, microservice)
+    policy_service.load_policies(mesos_framework, mesos_group, team, service)
+
+    label = configuration.get_label_for_path(path)
+    paths = _expand_paths(configuration, label, path)
+    for currentPath in paths:
+        policy_service.remove_read_policy(currentPath)
 
     policy_service.persist()
 
@@ -223,6 +245,13 @@ def _extract_team_and_service(microservice):
     if match:
         return [match.group(1), match.group(2)]
     raise Exception("invalid microservice value")
+
+
+def _init_policy_service(config_path, microservice):
+    configuration = MyVaultConfiguration(config_path)
+    policy_service = PolicyService(configuration)
+    (team, service) = _extract_team_and_service(microservice)
+    return configuration, policy_service, service, team
 
 
 if __name__ == '__main__':

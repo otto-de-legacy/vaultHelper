@@ -95,7 +95,7 @@ class TestVaultService(TestCase):
         somevalue = "someValue"
         client_mock = mock(hvac.Client)
 
-        when(client_mock).write(path, **{"value": somevalue}).thenReturn(None)
+        when(client_mock).write(path, **{"value": somevalue})
 
         service = VaultService()
         service._client = client_mock

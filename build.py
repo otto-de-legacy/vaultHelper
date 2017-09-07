@@ -36,7 +36,7 @@ use_plugin("copy_resources")
 name = "vaultHelper"
 default_task = ["clean", "analyze", "publish"]
 
-version = "1.1.0"
+version = "1.2.0"
 summary = "Command-line utility for vault secrets and policies management"
 description = __doc__
 authors = (Author("José Mejía", "jose.mejia@otto.de"),)

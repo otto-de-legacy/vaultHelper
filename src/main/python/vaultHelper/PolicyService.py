@@ -60,6 +60,12 @@ class PolicyService(object):
         """
         return self._sorted_policies()
 
+    def remove_read_policy(self, secret_path):
+        """
+        :type secret_path: string
+        """
+        self._policies.discard(Policy({self._normalize_path(secret_path): {"policy": "read"}}))
+
     def persist(self):
         if self._mesos_group is None:
             raise Exception("should load policies first")

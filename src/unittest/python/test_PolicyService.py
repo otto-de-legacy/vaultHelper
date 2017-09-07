@@ -49,6 +49,18 @@ class TestPolicyService(TestCase):
         # then
         self.assertEquals([self._create_policy(secret_path)], list(service._policies))
 
+    def test_remove_read_policy(self):
+        # given
+        secret_path = "develop/myTeam/myService/someSecret"
+        service = PolicyService(self.vault_config)
+        service._policy_dir = self.current_dir + "/out"
+
+        # when
+        service.remove_read_policy(secret_path)
+
+        # then
+        self.assertEquals([], list(service._policies))
+
     def test_persist(self):
         # given
         target_dir = self.current_dir + "/out"

@@ -260,6 +260,35 @@ class TestVaultApp(TestCase):
         self.assertIn("ci/myTeam/myService/mongo.password", str(result.output))
         self.assertIn("develop/myTeam/myService/mongo.password", str(result.output))
 
+    def test_remove_policy(self):
+        # given
+        mesos_framework = "chronos"
+        mesos_group = "myGroup"
+        team = "myTeam"
+        service = "myService"
+
+        policy1 = Policy({"ci/myTeam/myService/mongo.password": {"policy": "read"}})
+        policy2 = Policy({"ci/myTeam/myService/mysql.password": {"policy": "read"}})
+        when(PolicyService).load_policies(mesos_framework, mesos_group, team, service).thenReturn({policy1, policy2})
+        when(PolicyService).persist().thenReturn(None)
+
+        # when
+        runner = CliRunner()
+        result = runner.invoke(cli, ["remove_policies",
+                                     "--mesos_framework", mesos_framework,
+                                     "--mesos_group", mesos_group,
+                                     "--microservice", "myTeam-myService",
+                                     "--path", SOME_NONLIVE_SECRET_PATH,
+                                     "--config_path", self.config_path])
+
+        # then
+        self.assertEquals(0, result.exit_code)
+        verify(PolicyService, times=1).load_policies(mesos_framework, mesos_group, team, service)
+        verify(PolicyService, times=1).persist()
+        self.assertNotIn("myTeam/myService/mongo.password", str(result.output))
+        self.assertNotIn("ci/myTeam/myService/mysql.password", str(result.output))
+
+
     @staticmethod
     def _createPolicy(secret_path):
         return Policy({secret_path: {"policy": "read"}})

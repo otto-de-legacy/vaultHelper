@@ -77,6 +77,7 @@ Commands:
   login
   read
   read_policies
+  remove_policies
   write
 ```
 
@@ -147,11 +148,11 @@ Value: testing
 > writing develop/myTeam/myService/mongo.password
 ```
 
-*vaultHelper* can only add read policies to the git working directory provided in the *myVault.cfg* file.  It is strongly recommended to review the changes yourself (git diff) before pushing them.
+*vaultHelper* can add or remove read-policies to/from the git working directory provided in the *myVault.cfg* file.  It is strongly recommended to review the changes yourself (git diff) before pushing them.
 
 Remind that some files might be modified since *vaultHelper* sorts the secret paths alphabetically.
 
-If a label is provided of an alias, it will be used to determine the corresponding hcl filename.
+If an alias is provided for a label in the configuration, it will be used to determine the corresponding hcl filename.
 
 ```bash
 $ myvault.py add_policies
@@ -172,6 +173,9 @@ Secret path, e.g. env/myTeam/myService/jdbc.password: nonlive/myTeam/myService/j
 
 ### Version 1.1 released 2017-04-24
 * myvault.py can write the content of a file as vault secret
+
+### Version 1.2 released 2017-09-07
+* myvault.py can remove a hcl read policy
 
 ## License
 vaultHelper is published under the terms of the [Apache License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.html).
